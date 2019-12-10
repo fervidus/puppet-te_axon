@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'beaker-rspec'
 
 # Install Puppet on all hosts
@@ -13,7 +15,7 @@ RSpec.configure do |c|
   c.before :suite do
     # Install module to all hosts
     hosts.each do |host|
-      install_dev_puppet_module_on(host, :source => module_root)
+      install_dev_puppet_module_on(host, source: module_root)
 
       # Copy agent installer to hosts
       logger.error('host platform is ' + host.platform.variant)

@@ -117,10 +117,9 @@ class te_axon (
   String $service_rtm_name,
   Optional[String] $service_rtm_provider,
 ) {
-
-  contain te_axon::install
-  contain te_axon::config
-  contain te_axon::service
+  include te_axon::install
+  include te_axon::config
+  include te_axon::service
 
   Class['::te_axon::install']
   -> Class['::te_axon::config']

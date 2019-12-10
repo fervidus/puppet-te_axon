@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
 describe 'te_axon basic install' do
-
   if host_inventory['platform'] == 'windows'
     manifest = <<-EOS
       class { 'te_axon':
@@ -43,59 +44,59 @@ describe 'te_axon basic install' do
   tag_file = config_dir + '/metadata.yml'
   reg_key_file = config_dir + '/registration_pre_shared_key.txt'
 
-  it 'should run without errors' do
-    result = apply_manifest(manifest, :catch_failures => true)
+  it 'runs without errors' do
+    apply_manifest(manifest, catch_failures: true)
   end
 
-  it 'should run a second time without changes' do
-    result = apply_manifest(manifest, :catch_changes => true)
+  it 'runs a second time without changes' do
+    apply_manifest(manifest, catch_changes: true)
   end
 
   # Axon config directory should exist
   describe file(config_dir) do
-    it { should be_directory }
+    it { is_expected.to be_directory }
   end
 
   # Configuration file should exist and have the bridge, port, and spool size set
   describe file(config_file) do
-    it { should exist }
-    its(:content) { should match /bridge\.host=teconsole\.example\.com/ }
-    its(:content) { should match /bridge\.port=5670/ }
-    its(:content) { should match /spool.size.max=1g/ }
+    it { is_expected.to exist }
+    its(:content) { is_expected.to match /bridge\.host=teconsole\.example\.com/ }
+    its(:content) { is_expected.to match /bridge\.port=5670/ }
+    its(:content) { is_expected.to match /spool.size.max=1g/ }
   end
 
   # Tag file for the Axon agent should exist with proper content
   describe file(tag_file) do
-    its(:content_as_yaml) { should include('tagSets' => include('tag_set1' => include('1_tag1')))}
-    its(:content_as_yaml) { should include('tagSets' => include('tag_set1' => include('1_tag2')))}
-    its(:content_as_yaml) { should include('tagSets' => include('tag_set2' => '2_tag1'))}
+    its(:content_as_yaml) { is_expected.to include('tagSets' => include('tag_set1' => include('1_tag1'))) }
+    its(:content_as_yaml) { is_expected.to include('tagSets' => include('tag_set1' => include('1_tag2'))) }
+    its(:content_as_yaml) { is_expected.to include('tagSets' => include('tag_set2' => '2_tag1')) }
   end
 
   # Axon agents registration key should exist and contain the test password
   describe file(reg_key_file) do
-    it { should exist }
-    its(:content) { should match /foobar/ }
+    it { is_expected.to exist }
+    its(:content) { is_expected.to match /foobar/ }
   end
 
   # Axon agent should be installed
   describe package(package_name) do
-    it { should be_installed }
+    it { is_expected.to be_installed }
   end
 
   # Axon service should be running
   describe service(service_name) do
-    it { should be_enabled }
-    it { should be_running }
+    it { is_expected.to be_enabled }
+    it { is_expected.to be_running }
   end
 
   # Axon EG service installed and be running
   describe service(eg_service_name) do
-    it { should be_enabled }
-    it { should be_running }
+    it { is_expected.to be_enabled }
+    it { is_expected.to be_running }
   end
 
   # EG Port should be listening
   describe port(1169) do
-    it { should be_listening }
+    it { is_expected.to be_listening }
   end
 end
